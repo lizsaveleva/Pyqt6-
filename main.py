@@ -159,10 +159,10 @@ class MainWindow(QWidget):
                         JOIN manufacturers m ON p.product_manufacturer = m.id
                         JOIN suppliers s ON p.product_supplier = s.id
                         JOIN product_categories pc ON p.product_category = pc.id""")
-        return cur.fetchall()
+        return list(cur.fetchall())  # ← ИСПРАВЛЕНО: преобразуем кортеж в список
 
     def load_products(self):
-        rows = self.get_products()
+        rows = self.get_products()  # теперь это список
 
         if self.role in ("manager", "admin"):
             # поиск по всем текстовым полям
@@ -236,7 +236,7 @@ class MainWindow(QWidget):
             new_price = product_price - (product_price * current_discount / 100)
             price_layout.addWidget(QLabel("Цена:"))
             price_layout.addWidget(old)
-            price_layout.addWidget(QLabel(f"{new_price}р"))
+            price_layout.addWidget(QLabel(f"{new_price:.2f}р"))
             price_layout.addStretch()
             info_layout.addLayout(price_layout)
         else:
@@ -433,10 +433,10 @@ class OrdersWindow(QWidget):
                         o.pickup_address, o.order_date, o.delivery_date, o.status
                         FROM orders o
                         JOIN order_statuses os ON o.status = os.id""")
-        return cur.fetchall()
+        return list(cur.fetchall())  # ← ИСПРАВЛЕНО: преобразуем кортеж в список
 
     def load_orders(self):
-        orders = self.get_orders()
+        orders = self.get_orders()  # теперь это список
         container = QFrame()
         container_layout = QVBoxLayout()
         for o in orders:
